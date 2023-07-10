@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Reservation {
 	
+	private static Date now = new Date();
 	private Integer roomNumber;
 	private Date chekin;
 	private Date chekout;
@@ -38,9 +39,17 @@ public class Reservation {
 		long diff = chekout.getTime() - chekin.getTime();
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
-	public void updateDates(Date chekin, Date chekout) {
-		this.chekin = chekin;
-		this.chekout =chekout;
+	public String updateDates(Date chekin, Date chekout) {
+		if(chekin.before(now) || chekout.before(now)) {
+			return "error in reservation: Update must be after now";
+		}
+		if(! chekout.after(chekin)){
+			return "error in reservation: Check-out must be after check-in date ";
+		} else {
+			this.chekin = chekin;
+			this.chekout =chekout;
+			return null;
+		}
 	}
 
 	@Override
